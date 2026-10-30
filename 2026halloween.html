@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>  
+    
+  <link rel="icon" href="img/ico.png" type="image/png">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026 할로윈 퍼레이드 합작</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Gaegu&display=swap');
+@font-face {
+    font-family: 'KnpsOdaesan';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2510-2@1.0/KNPSOdaesan-Regular.woff2') format('woff2');
+    font-weight: normal;
+    font-display: swap;
+}
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; overflow: hidden; }
+  body {
+    color: #ffffff;
+    background: #000000;
+    font-family: 'KnpsOdaesan';
+  }
+
+  /* 화면을 고정하고, 내부 트랙을 가로로 이동 */
+  .viewport {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .world {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 320vw;
+    height: 100%;
+    will-change: transform;
+  }
+
+  /* 후경: 가장 느리게 이동 */
+  .background {
+    position: absolute;
+    inset: 0;
+    width: 400vw;
+    /* background-color: #00ff00; */
+    background-image: url("img/background.png");
+    background-size: auto 100vh;
+    will-change: transform;
+  }
+  .horizon {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 1500vw;
+    height: 90vh;
+    
+    
+    background-image: url("img/background2.png");
+    
+    background-size: auto 100vh;
+    will-change: transform;
+  }
+
+  /* 중경: 콘텐츠와 메인 이미지 */
+  .content-track {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    gap: 0px;
+    will-change: transform;
+  }
+  .intro, .scene {
+    min-width: 10vw;
+    
+  }
+  .intro {
+    align-self: left;
+    padding: 5vw;
+    
+    flex: 0 0 80vw;
+    width: 100vw;
+  }
+
+  
+
+ .intro .eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 2rem;
+    font-size: clamp(.3rem, 5vw, 1.5rem);
+    color: #ffffff;
+    font-weight: 700;
+    margin-right: -1.8rem;
+    
+    text-shadow: 
+    1px 1px 2px #FF9551,
+    0 0 1em #FF9551,
+    0 0 0.2em #FF9551;
+    text-align: right;
+
+  }
+ .intro  h1 {
+    font-size: clamp(3.4rem, 6vw, 5.5rem);
+    text-align: right;
+    line-height: 1.2;
+    letter-spacing: -.055em;
+    margin-top: 0;
+     font-family: "Bagel Fat One";
+     
+    color: #FFF0E6;
+    text-shadow: 
+    1px 1px 2px #FF9551,
+    0 0 1em #FF9551,
+    0 0 0.2em #FF9551;
+    margin-bottom: 1rem;
+  }
+  .intro p { line-height: 1.3; color: #ffd4ae; 
+    text-shadow: 
+    1px 1px 2px #FF9551;
+  
+    text-align: right;
+    font-size: clamp(.7rem, 2.5vw, .9rem);
+    margin-bottom: 30px;
+}
+
+  .intro a.backLink {
+  border-radius: 999px; 
+  
+    text-align: right;
+  padding: 15px 15px 10px;
+  background-color: #FF9551;
+  color: white;
+  border: none;
+    font-size: clamp(.7rem, 2.5vw, .9rem);
+  cursor: pointer;
+  transition: background 0.1s ease-in-out;
+text-decoration: none;
+
+}
+
+  .intro a.backLink:hover {
+  background-color: #b9500e;
+}
+
+  .scene {
+    position: relative;
+    /* min-height: 60vh; */
+    display: grid;
+    place-items: center;
+
+  margin-right: var(--scene-gap, 0vw);
+  }
+  
+.main-art {
+  display: block;
+  width: var(--art-width, auto);
+  height: var(--art-height, auto);
+  /* max-width: 90vw; */
+  /* max-height: 90vh; */
+  object-fit: contain;
+  position: relative;
+}
+
+.art-wrap {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+
+  height: 100vh;
+}
+.caption {
+  position: absolute;
+  left: 50%;
+  bottom: 50px;
+  width: max-content;
+  max-width: 90vw;
+  color: #fff;
+  opacity: 0;
+  transform: translate(-50%, 18px);
+  transition: opacity .45s ease, transform .45s ease;
+  text-align: center;
+  text-shadow: 0px 1px 5px #FF9551;
+  
+    z-index: 9999;
+}
+
+.scene.is-active .caption {
+  opacity: 1;
+  transform: translate(-50%, 0);
+  
+    z-index: 9999
+}
+  .caption p { margin: 0; color: #fff; line-height: 1.65; font-size: .92rem; 
+    z-index: 9999}
+
+  /* 전경: 가장 빠르게 움직이는 하단 장식 */
+  .foreground {
+    position: absolute;
+    z-index: 5;
+    pointer-events: none;
+    left: 0;
+    bottom: 0;
+    width: 9999vw;
+    height: 100vh;
+    background-image: url("img/background3.png");
+    background-size: auto 100vh;
+  }
+  @media (max-width: 650px) {
+    .content-track { gap: 0px; padding: 0 6vw; }
+    .intro, .scene { flex-basis: 88vw; }.main-art {
+  width: var(--art-width, 76vw);
+  height: var(--art-height, auto);
+}
+    /* .caption { right: -1vw; width: 66vw; bottom: -2%; padding: 1rem; } */
+    .scene { min-height: 52vh; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .caption { transition: none; }
+  }
+    /* 화면 바로 앞을 스쳐 지나가는 파티클 */
+  .particles {
+    position: absolute;
+    z-index: 6;
+    top: 0;
+    left: 0;
+    width: 9900vw;
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none;
+    will-change: transform;
+  }
+
+  .particle {
+    position: absolute;
+    border-radius: 50%;
+    background: #FF9551;
+    box-shadow: 0 0 12px 3px #FF9551,
+    0 0 2px 1px #ff7824,
+    0 0 5px 2px #FF9551;
+    opacity: 0.1;
+  }
+
+  .particle.streak {
+    border-radius: 999px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      #ffffff,
+      transparent
+    );
+    box-shadow: none;
+  }
+  
+    /* 화면 바로 앞을 스쳐 지나가는 파티클 */
+  .particles2 {
+    position: absolute;
+    z-index: 6;
+    top: 0;
+    left: 0;
+    width: 9900vw;
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none;
+    will-change: transform;
+  }
+
+  .particle2 {
+    position: absolute;
+    border-radius: 50%;
+    background: #FF9551;
+    box-shadow: 0 0 12px 3px #FF9551,
+    0 0 2px 1px #FF9551,
+    0 0 5px 2px #FF9551;
+    opacity: 0.5;
+  }
+
+  .particle2.streak {
+    border-radius: 999px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      #ffffff,
+      transparent
+    );
+    box-shadow: none;
+  }
+  /* 인트로: 텍스트 + 썸네일 */
+.intro {
+  flex: 0 0 80vw;
+  max-width: 110vw;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 0.8fr);
+  align-items: center;
+  gap: 2rem;
+  padding: 4vw;
+
+  margin-right: clamp(40px, 50vw, 500px);
+}
+
+.introTxt {
+  min-width: 0;
+}
+
+/* 썸네일 자동 배치 */
+.introImg {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: repeat(6, auto);
+  gap: 10px;
+  min-width: 0;
+  max-width: calc(45vh - 2.5px);
+}
+
+/* 정사각형 썸네일 */
+.introThumb {
+  position: relative;
+  display: block;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background-image:
+    var(--thumb-image),
+    linear-gradient(#00000050, #00000020);
+  background-size: cover;
+  background-position: center;
+  text-decoration: none;
+  color: white;
+  border-radius: 10%;
+  filter: grayscale(50%);
+}
+
+/* 텍스트 */
+.introThumb span {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: end center;
+  /* padding: .3rem; */
+  
+    text-shadow: 
+    1px 1px 2px #180431,
+    0 0 1em #180431,
+    0 0 0.2em #180431;
+  text-align: center;
+  font-size: 0.9rem;
+  font-weight: 600;;
+}
+
+/* 호버하면 이미지가 밝아지고 텍스트 표시 */
+.introThumb:hover {
+  filter: brightness(1.1) grayscale(0%);
+  
+  background-image:
+  
+    var(--thumb-image),
+    linear-gradient(#ff880070, #ff880020);
+}
+
+.introThumb:hover span,
+.introThumb:focus-visible span {
+  opacity: 1;
+  
+    text-shadow: 
+    
+    0 0 0.2em #180431,
+    1px 1px 2px #FF9551,
+    0 0 1em #FF9551,
+    0 0 0.2em #FF9551,
+    0 0 0.2em #180431;
+}
+
+.introThumb {
+  transition: filter 0.25s ease;
+}
+
+/* 좁은 화면: 텍스트 아래에 썸네일 */
+@media (max-width: 700px) {
+  .intro {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.5rem;
+  }
+
+  .introImg {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+  .introThumb span 
+{display: none;}
+}
+
+
+</style>
+</head>
+<body>
+<div class="viewport" id="viewport">
+  <div class="background" id="background"></div>
+  <div class="horizon" id="horizon"></div>
+  
+  <div class="foreground" id="foreground"></div>
+
+  <main class="world" id="world">
+    <div class="content-track" id="contentTrack">
+      <section class="intro">
+        <div class="introTxt">
+        <div class="eyebrow">2026</div>
+        <h1>할로윈 <br>퍼레이드<br>합작</h1>
+        <p>마우스 휠로 이동, 모바일은 좌우로 스와이프.<br>
+        주최 및 편집 모뜨모뜨<br></p>
+        <p>
+    <a class="backLink" href="https://cafe.naver.com/chogca/1900644">합작 공개 게시글로 돌아가기</a>
+    </p>
+  </div>
+          
+        
+  <nav class="introImg" aria-label="장면 바로가기">
+    <a class="introThumb" href="#scene1"
+       style="--thumb-image: url('img/밤맨쥬b.png')">
+      <span>밤맨쥬</span>
+    </a>
+
+    <a class="introThumb" href="#scene2"
+       style="--thumb-image: url('img/털개구리2b.png')">
+      <span>털개구리</span>
+    </a>
+
+    <a class="introThumb" href="#scene3"
+       style="--thumb-image: url('img/털개구리b.png')">
+      <span>털개구리</span>
+    </a>
+    <a class="introThumb" href="#scene4"
+       style="--thumb-image: url('img/덕2b.png')">
+      <span>덕2</span>
+    </a>
+
+    <a class="introThumb" href="#scene5"
+       style="--thumb-image: url('img/보라콩떡b.png')">
+      <span>보라콩떡</span>
+    </a>
+
+    <a class="introThumb" href="#scene6"
+       style="--thumb-image: url('img/핀씨b.png')">
+      <span>핀씨</span>
+    </a>
+
+
+    <a class="introThumb" href="#scene7"
+       style="--thumb-image: url('img/야몽b.png')">
+      <span>야몽</span>
+    </a>
+    
+    <a class="introThumb" href="#scene8"
+       style="--thumb-image: url('img/아자스b.png')">
+      <span>아자스</span>
+    </a>
+    <a class="introThumb" href="#scene9"
+       style="--thumb-image: url('img/뜨뜸b.png')">
+      <span>뜨뜸</span>
+    </a>
+    <a class="introThumb" href="#scene10"
+       style="--thumb-image: url('img/이비비b.png')">
+      <span>이비비</span>
+    </a>
+    <a class="introThumb" href="#scene11"
+       style="--thumb-image: url('img/모뜨모뜨b.png')">
+      <span>모뜨모뜨</span>
+    </a>
+    <a class="introThumb" href="#scene12"
+       style="--thumb-image: url('img/모뜨모뜨2b.png')">
+      <span>모뜨모뜨</span>
+    </a>
+  </nav>
+
+
+      </section>
+
+      
+      
+      <section class="scene" id="scene1" data-scene
+        style="--art-width: auto; --art-height: 90vh; --scene-gap: 63vh;">
+
+        <div class="art-wrap">
+          <img class="main-art" src="img/밤맨쥬.png">
+
+          <div class="caption">
+            <p>(c) 2026. 밤맨쥬 All rights reserved.</p>
+          </div>
+        </div>
+
+      </section>
+
+
+
+      <section class="scene" id="scene2" data-scene
+
+        style="--art-width: auto; --art-height: 73vh; --scene-gap: 40vh;">
+      
+        <div class="art-wrap">
+        <img class="main-art"     src="img/털개구리2.png" style="margin-top: 5vh;" >
+        <div class="caption">
+          <p>(c) 2026. 털개구리 All rights reserved.</p>
+        </div></div>
+      </section>
+
+      <section class="scene" id="scene3" data-scene
+        style="--art-width: auto; --art-height: 25vh; --scene-gap: 20vh;">
+
+        <div class="art-wrap">
+        <img class="main-art"      src="img/털개구리.png"style="margin-bottom: 30vh;"   >
+        <div class="caption">
+          <p>(c) 2026. 털개구리 All rights reserved.</p>
+        </div></div>
+      </section>
+      
+
+      <section class="scene" id="scene4" data-scene
+
+        style="--art-width: auto; --art-height: 75vh; --scene-gap: 43vh;">
+        <div class="art-wrap">
+        <img class="main-art"     src="img/덕2.png" style="margin-top: 10vh;" >
+        <div class="caption">
+          <p>(c) 2026. 덕2 All rights reserved.</p>
+        </div></div>
+      </section>
+      
+
+      <section class="scene" id="scene5" data-scene
+
+        style="--art-width: auto; --art-height: 80vh; --scene-gap: 70vh; ">
+        <div class="art-wrap">
+        <img class="main-art"     src="img/보라콩떡.png" style="margin-top: 10vh;" >
+        <div class="caption">
+          <p>(c) 2026. 보라콩떡 All rights reserved.</p>
+        </div></div>
+      </section>
+      
+      
+      <section class="scene" id="scene6" data-scene 
+
+        style="--art-width: auto; --art-height: 108vh; --scene-gap: 120vh;">
+        <div class="art-wrap">
+        <img class="main-art"   src="img/핀씨.png" >
+        <div class="caption">
+          <p>(c) 2026. 핀씨 All rights reserved.</p>
+        </div></div>
+      </section>
+      
+
+      
+      <section class="scene" id="scene7" data-scene
+
+        style="--art-width: auto; --art-height: 120vh; --scene-gap: 75vh; ">
+        <div class="art-wrap">
+        <img class="main-art"     src="img/야몽.png" style="margin-top: -10vh;">
+        <div class="caption">
+          <p>(c) 2026. 야몽 All rights reserved.</p>
+        </div></div>
+      </section>
+      
+
+      
+      <section class="scene" id="scene8" data-scene
+
+        style="--art-width: auto; --art-height: 130vh; --scene-gap: 40vh;">
+        <div class="art-wrap">
+        <img class="main-art"     src="img/아자스.png" style="margin-top: -25vh;">
+        <div class="caption">
+          <p>(c) 2026. 아자스 All rights reserved.</p>
+        </div></div>
+      </section>
+      
+
+      
+      <section class="scene" id="scene9" data-scene
+
+        style="--art-width: auto; --art-height: 88vh; --scene-gap: 50vh;">
+        <div class="art-wrap">
+        <img class="main-art"     src="img/뜨뜸.png" style="margin-top: 13vh;">
+        <div class="caption">
+          <p>(c) 2026. 뜨뜸 All rights reserved.</p>
+        </div></div>
+      </section>
+      
+      
+      <section class="scene" id="scene10" data-scene
+
+        style="--art-width: auto; --art-height: 96vh; --scene-gap: 53vh;">
+        <div class="art-wrap">
+        <img class="main-art"     src="img/이비비.png" style="margin-top: 0;" >
+        <div class="caption">
+          <p>(c) 2026. 이비비 All rights reserved.</p>
+        </div></div>
+      </section>
+      
+      
+      <section class="scene" id="scene11" data-scene
+
+        style="--art-width: auto; --art-height: 83vh; --scene-gap: 42vh;">
+        <div class="art-wrap">
+        <img class="main-art"     src="img/모뜨모뜨.png" style="margin-top: 13vh;" >
+        <div class="caption">
+          <p>(c) 2026. 모뜨모뜨 All rights reserved.</p>
+        </div></div>
+      </section>
+      
+      
+      <section class="scene" id="scene12" data-scene
+
+        style="--art-width: auto; --art-height: 83vh; --scene-gap: 80vh;">
+        <div class="art-wrap">
+        <img class="main-art"     src="img/모뜨모뜨2.png" style="margin-top: 13vh;">
+        <div class="caption"> 
+          <p>(c) 2026. 모뜨모뜨 All rights reserved.</p>
+        </div></div>
+      </section>
+      
+<section class="scene" id="scene13" data-scene
+  style="--art-width: auto; --art-height: 30vh; --scene-gap: 30vh;">
+  <div class="art-wrap">
+    <img class="main-art" id="backToIntro"
+         src="img/back.png"
+         style="margin-top: 15vh; cursor: pointer; margin-top: 65vh;"
+         alt="처음으로 돌아가기">
+  </div>
+</section>
+
+      
+    </div>
+  </main>
+
+  <div class="particles" id="particles"></div>
+  <div class="particles2" id="particles2"></div>
+</div>
+
+<script>
+(() => {
+  const viewport = document.getElementById('viewport');
+  const background = document.getElementById('background');
+  const horizon = document.getElementById('horizon');
+  const world = document.getElementById('world');
+  const contentTrack = document.getElementById('contentTrack');
+  const foreground = document.getElementById('foreground');
+  const particles = document.getElementById('particles');
+  const particles2 = document.getElementById('particles2');
+
+// 화면 가까이에 있는 파티클 100개 생성
+for (let i = 0; i < 300; i++) {
+  const particle = document.createElement('div');
+
+  // 빛 알갱이와 길쭉한 빛 조각을 섞습니다.
+  const streak = Math.random() < 0.00;
+  particle.className = streak ? 'particle streak' : 'particle';
+
+  const size = streak
+    ? 2 + Math.random() * 5
+    : 2 + Math.random() * 20;
+
+  particle.style.width = streak
+    ? `${12 + Math.random() * 10}px`
+    : `${size}px`;
+
+  particle.style.height = streak
+    ? `${size}px`
+    : `${size}px`;
+
+  particle.style.left = `${Math.random() * 9999}vw`;
+  particle.style.top = `${Math.random() * 100}%`;
+  particle.style.opacity = 0.01 + Math.random() * 0.3;
+
+  particles.appendChild(particle);
+}
+
+
+// 화면 가까이에 있는 파티클 100개 생성
+for (let i = 0; i < 600; i++) {
+  const particle2 = document.createElement('div');
+
+  // 빛 알갱이와 길쭉한 빛 조각을 섞습니다.
+  const streak = Math.random() < 0.00;
+  particle2.className = streak ? 'particle2 streak' : 'particle2';
+
+  const size = streak
+    ? 2 + Math.random() * 3
+    : 2 + Math.random() * 15;
+
+  particle2.style.width = streak
+    ? `${12 + Math.random() * 10}px`
+    : `${size}px`;
+
+  particle2.style.height = streak
+    ? `${size}px`
+    : `${size}px`;
+
+  particle2.style.left = `${Math.random() * 9999}vw`;
+  particle2.style.top = `${Math.random() * 100}%`;
+  particle2.style.opacity = 0.1 + Math.random() * 0.5;
+
+  particles2.appendChild(particle2);
+}
+
+
+  const scenes = [...document.querySelectorAll('[data-scene]')];
+document.getElementById('backToIntro').addEventListener('click', () => {
+  targetScroll = 0;
+});
+
+  document.querySelectorAll('.introThumb').forEach(link => {
+  link.addEventListener('click', event => {
+    const target = document.querySelector(link.getAttribute('href'));
+    if (!target) return;
+
+    event.preventDefault();
+
+    const viewportRect = viewport.getBoundingClientRect();
+    const targetRect = target.getBoundingClientRect();
+
+    targetScroll = Math.max(
+      0,
+      Math.min(
+        maxScroll,
+        scrollX + targetRect.left - viewportRect.left
+          + targetRect.width / 2
+          - viewport.clientWidth / 2
+      )
+    );
+  });
+});
+
+
+
+  let scrollX = 0;
+  let maxScroll = 0;
+  let targetScroll = 0;
+
+  function measure() {
+    // 가로 트랙 끝까지만 스크롤
+    maxScroll = Math.max(0, contentTrack.scrollWidth - viewport.clientWidth);
+    targetScroll = Math.min(targetScroll, maxScroll);
+  }
+  measure();
+  window.addEventListener('resize', measure);
+
+  // 휠의 세로 입력을 가로 이동으로 전환
+  viewport.addEventListener('wheel', (event) => {
+    if (Math.abs(event.deltaY) > Math.abs(event.deltaX)) {
+      event.preventDefault();
+      targetScroll = Math.max(0, Math.min(maxScroll, targetScroll + event.deltaY));
+    } else {
+      targetScroll = Math.max(0, Math.min(maxScroll, targetScroll + event.deltaX));
+    }
+  }, { passive: false });
+
+  // 터치 스와이프
+  let touchX = null;
+  viewport.addEventListener('touchstart', e => {
+    touchX = e.touches[0].clientX;
+  }, { passive: true });
+  viewport.addEventListener('touchmove', e => {
+    if (touchX === null) return;
+    const x = e.touches[0].clientX;
+    targetScroll = Math.max(0, Math.min(maxScroll, targetScroll + (touchX - x)));
+    touchX = x;
+  }, { passive: true });
+  viewport.addEventListener('touchend', () => touchX = null, { passive: true });
+
+  function animate() {
+    // 부드러운 관성 이동
+    scrollX += (targetScroll - scrollX) * 0.11;
+
+    // 각 레이어의 이동 비율: 후경 < 중경 < 전경
+    background.style.transform = `translate3d(${-scrollX * 0.16}px, 0, 0)`;
+    horizon.style.transform = `translate3d(${-scrollX * 0.3}px, 0, 0)`;
+    particles2.style.transform = `translate3d(${-scrollX * 1.3}px, 0, 0)`;
+    contentTrack.style.transform = `translate3d(${-scrollX}px, 0, 0)`;
+    foreground.style.transform = `translate3d(${-scrollX * 2}px, 0, 0)`;
+    particles.style.transform = `translate3d(${-scrollX * 3.9}px, 0, 0)`;
+
+    // 각 장면 중심이 뷰포트 중앙에 가까울 때 설명 표시
+    const center = viewport.clientWidth / 2;
+    scenes.forEach(scene => {
+      const art = scene.querySelector('.art-wrap');
+const rect = (art || scene).getBoundingClientRect();
+const sceneCenter = rect.left + rect.width / 2;
+      const distance = Math.abs(sceneCenter - center);
+      scene.classList.toggle('is-active', distance < viewport.clientWidth * 0.11);
+    });
+
+    requestAnimationFrame(animate);
+  }
+  requestAnimationFrame(animate);
+})();
+</script>
+</body>
+</html>
