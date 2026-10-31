@@ -172,7 +172,7 @@ text-decoration: none;
 .caption {
   position: absolute;
   left: 50%;
-  bottom: 15vh;
+  bottom: 0;
   width: max-content;
   max-width: 90vw;
   color: #fff;
@@ -183,6 +183,7 @@ text-decoration: none;
   text-shadow: 0px 1px 5px #FF9551;
   
 }
+    
 
 .scene.is-active .caption {
   opacity: 1;
@@ -190,7 +191,7 @@ text-decoration: none;
   
 }
   .caption p { margin: 0; color: #fff; line-height: 1.65; font-size: .92rem; 
-    }
+    padding-bottom: 10vh;}
 
   /* 전경: 가장 빠르게 움직이는 하단 장식 */
   .foreground {
@@ -213,8 +214,8 @@ text-decoration: none;
     /* .caption { right: -1vw; width: 66vw; bottom: -2%; padding: 1rem; } */
     .scene { min-height: 52vh; }
       
-.caption {
-  bottom: 25vh;
+
+.caption p {padding-bottom: 20vh;;
 } 
   }
   @media (prefers-reduced-motion: reduce) {
